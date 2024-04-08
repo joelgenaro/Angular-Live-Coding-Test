@@ -1,0 +1,185 @@
+<h2>List</h2>
+<button>
+  <mat-icon (click)="onAddNewRow()" class="add-button">add_box</mat-icon>
+</button>
+
+<form [formGroup]="VOForm" autocomplete="off">
+  <ng-container formArrayName="VORows">
+    <table
+      #table
+      mat-table
+      [dataSource]="dataSource"
+      class="mat-elevation-z8"
+      cdkDropList
+      [cdkDropListData]="dataSource"
+      (cdkDropListDropped)="dropTable($event, VOForm)"
+    >
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Sensor Name</th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [formGroup]="element"
+        >
+          <mat-form-field
+            class="edit-field"
+            [appearance]="
+              VOForm.get('VORows')?.value[i].isEditable ? 'outline' : 'fill'
+            "
+          >
+            <input
+              matInput
+              type="text"
+              formControlName="name"
+              [readonly]="VOForm.get('VORows')?.value[i].isEditable"
+            />
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Group Column -->
+      <ng-container matColumnDef="group">
+        <th mat-header-cell *matHeaderCellDef>Group</th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [formGroup]="element"
+        >
+          <mat-form-field
+            class="edit-field"
+            [appearance]="
+              VOForm.get('VORows')?.value[i].isEditable ? 'outline' : 'fill'
+            "
+          >
+            <input
+              matInput
+              type="text"
+              formControlName="group"
+              [readonly]="VOForm.get('VORows')?.value[i].isEditable"
+            />
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <!-- Reference Column -->
+      <ng-container matColumnDef="reference">
+        <th mat-header-cell *matHeaderCellDef>Reference Value</th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [formGroup]="element"
+        >
+          <mat-form-field
+            class="edit-field"
+            [appearance]="
+              VOForm.get('VORows')?.value[i].isEditable ? 'outline' : 'fill'
+            "
+          >
+            <input
+              matInput
+              type="number"
+              formControlName="reference"
+              [readonly]="VOForm.get('VORows')?.value[i].isEditable"
+            />
+          </mat-form-field>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="alarm">
+        <th mat-header-cell *matHeaderCellDef class="alarm-colum">
+          Alarm Enabled
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [formGroup]="element"
+        >
+          <mat-form-field
+            class="edit-field"
+            [appearance]="
+              VOForm.get('VORows')?.value[i].isEditable ? 'outline' : 'fill'
+            "
+          >
+            <mat-select
+              class="alarm-selector"
+              formControlName="alarm"
+              *ngIf="!VOForm.get('VORows')?.value[i].isEditable"
+            >
+              <mat-option value="true">true</mat-option>
+              <mat-option value="false">false</mat-option>
+            </mat-select>
+            <input
+              matInput
+              type="text"
+              *ngIf="VOForm.get('VORows')?.value[i].isEditable"
+              formControlName="alarm"
+              [readonly]="VOForm.get('VORows')?.value[i].isEditable"
+            />
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [formGroup]="element"
+          class="action-container"
+        >
+          <button
+            mat-icon-button
+            class="material-icons app-toolbar-menu save-button action-btn"
+            matTooltip="Save Changes"
+            (click)="onSaveVO(VOForm, i)"
+            *ngIf="!VOForm.get('VORows')?.value[i].isEditable"
+            color="primary"
+          >
+            <mat-icon>check_circle</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            class="material-icons app-toolbar-menu cancel-button action-btn"
+            matTooltip="Cancel Changes"
+            color="warn"
+            (click)="onCancelSVO(VOForm, i)"
+            *ngIf="!VOForm.get('VORows')?.value[i].isEditable"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            class="material-icons app-toolbar-menu save-button action-btn"
+            *ngIf="VOForm.get('VORows')?.value[i].isEditable"
+            matTooltip="Edit"
+            color="primary"
+            (click)="onEditSVO(VOForm, i)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            class="material-icons app-toolbar-menu delete-button action-btn"
+            *ngIf="VOForm.get('VORows')?.value[i].isEditable"
+            matTooltip="Delete"
+            color="warn"
+            (click)="onDelete(VOForm, i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        cdkDrag
+        [cdkDragData]="row"
+      ></tr>
+    </table>
+  </ng-container>
+</form>
